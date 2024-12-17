@@ -64,5 +64,5 @@ export async function getPostsForLast24Hours(
 }
 
 export async function getAllPosts() {
-  return db.select().from(postsTable);
+  return db.select().from(postsTable).orderBy(asc(postsTable.id));
 }

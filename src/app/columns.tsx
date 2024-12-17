@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { getAllPosts, getPostsForLast24Hours } from "@/db/queries/select";
-import { MoreHorizontal } from "lucide-react";
+import { GripVertical, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { updatePost } from "@/db/queries/update";
 import { cn } from "@/lib/utils";
+import { deletePost } from "@/db/queries/delete";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -53,7 +54,7 @@ export const columns: ColumnDef<cols>[] = [
             updatedAt: row.original.updatedAt,
             complete: !!value,
           });
-          row.toggleSelected(!!value);
+          // row.toggleSelected(!!value);
         }}
         aria-label="Select row"
       />
@@ -80,9 +81,9 @@ export const columns: ColumnDef<cols>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0 float-right">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
+              <GripVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -97,6 +98,13 @@ export const columns: ColumnDef<cols>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={async () => {
+                await deletePost(payment.id);
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
