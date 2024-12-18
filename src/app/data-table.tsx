@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/command";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -61,11 +62,24 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
+
+  React.useEffect(() => {
+    const selectedRows = data.reduce((acc, row) => {
+      acc[row.id] = row.complete;
+      return acc;
+    }, {});
+    setRowSelection(selectedRows);
+    console.log("selectedRows: " + JSON.stringify(selectedRows));
+
+    console.log("selection: " + JSON.stringify(rowSelection));
+    console.log(data);
+  }, [data]);
   const table = useReactTable({
     data,
     columns,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row.id,
     state: {
       rowSelection,
     },
@@ -166,7 +180,9 @@ function AddItemDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Submit</Button>
+            <DialogClose asChild>
+              <Button type="submit">Submit</Button>
+            </DialogClose>
           </DialogFooter>
         </form>
       </DialogContent>

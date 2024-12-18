@@ -43,18 +43,23 @@ export const columns: ColumnDef<cols>[] = [
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.original.complete}
+        checked={row.getIsSelected()}
         onCheckedChange={async (value) => {
-          await updatePost({
-            id: row.original.id,
-            title: row.original.title,
-            content: row.original.content,
-            userId: row.original.userId,
-            createdAt: row.original.createdAt,
-            updatedAt: row.original.updatedAt,
-            complete: !!value,
-          });
-          // row.toggleSelected(!!value);
+          let previousValue = row.original.complete;
+          try {
+            row.toggleSelected(!!value);
+            updatePost(row.original.id, {
+              title: row.original.title,
+              content: row.original.content,
+              userId: row.original.userId,
+              createdAt: row.original.createdAt,
+              updatedAt: row.original.updatedAt,
+              complete: !!value,
+            });
+          } catch (error) {
+            console.error("Error updating post", error);
+            row.toggleSelected(previousValue);
+          }
         }}
         aria-label="Select row"
       />
